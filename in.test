@@ -9,6 +9,7 @@ atom_style	granular
 atom_modify	map array
 boundary	f f f
 newton		off
+processors	5 2 2
 
 communicate	single vel yes
 
@@ -37,9 +38,9 @@ timestep   ${dt}
 
 fix		gravi all gravity 9.81 vector 0.0 -1.0 0.0
 
-fix cad_base all mesh/surface/stress  file s3_base.stl type 1 
-fix cad_front all mesh/surface/stress file s3_frontera.stl type 1 
-fix		inface all mesh/surface file  s3_insert.stl type 1
+fix cad_base all mesh/surface/stress  file meshes/s3_base.stl type 1 
+fix cad_front all mesh/surface/stress file meshes/s3_frontera.stl type 1 
+fix		inface all mesh/surface file  meshes/s3_insert.stl type 1
 
 fix granwalls all wall/gran model hertz tangential no_history rolling_friction cdt mesh n_meshes 2 meshes cad_base cad_front# cambiar n_meshes a 2
 
