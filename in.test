@@ -1,5 +1,5 @@
-variable f  equal   15.75
-variable T  equal   1.0/15.75
+variable f  equal   30.75
+variable T  equal   1.0/30.75
 variable N  equal   512.0
 variable dt  equal   $T/$N
 variable Y_0 equal 0.002828
@@ -9,7 +9,7 @@ atom_style	granular
 atom_modify	map array
 boundary	f f f
 newton		off
-processors	5 2 2
+processors	4 4 2
 
 communicate	single vel yes
 
@@ -78,4 +78,3 @@ fix mov_m all move/mesh mesh cad_base viblin axis 0. 1. 0. order 1 amplitude ${Y
 
 dump_modify dmp0 every 200 #16
 run     150000 upto
-
