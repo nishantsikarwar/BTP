@@ -1,8 +1,8 @@
-variable f  equal   30.75
-variable T  equal   1.0/30.75
+variable f  equal   30
+variable T  equal   1.0/30
 variable N  equal   512.0
 variable dt  equal   $T/$N
-variable Y_0 equal 0.002828
+variable Y_0 equal 0.12828
 variable rho equal 2700
 
 atom_style	granular
@@ -10,15 +10,14 @@ atom_modify	map array
 boundary	f f f
 newton		off
 processors	2 2 2
-
 communicate	single vel yes
 
 units		si
 
-region		reg block -0.26 0.26 -0.2 0.23 -0.26 0.26 units box
+region		reg block -5 105 -5 85 -5 450 units box
 create_box	1 reg
 
-neighbor	0.002 bin   
+neighbor	2.0   bin   
 neigh_modify	delay 0 
 
 #     Material properties required for new pair styles
@@ -36,17 +35,19 @@ pair_coeff	* *
 
 timestep   ${dt}
 
-fix		gravi all gravity 9.81 vector 0.0 -1.0 0.0
+fix		gravi all gravity 9.81 vector 0.0 0.0 -1.0
 
-fix cad_base all mesh/surface/stress  file meshes/s3_base.stl type 1 
-fix cad_front all mesh/surface/stress file meshes/s3_frontera.stl type 1 
-fix		inface all mesh/surface file  meshes/s3_insert.stl type 1
+fix cad_base all mesh/surface/stress  file base.stl type 1 
+fix cad_front all mesh/surface/stress file shell.stl type 1 
+fix		inface all mesh/surface file  insface.stl type 1
 
 fix granwalls all wall/gran model hertz tangential no_history rolling_friction cdt mesh n_meshes 2 meshes cad_base cad_front# cambiar n_meshes a 2
 
 #distributions for insertion
 fix		pts1 all particletemplate/sphere 15485863 atom_type 1 density constant ${rho} radius constant 0.005
-fix		pdd1 all particledistribution/discrete 32452843 1 pts1  1.0
+#fix		pts2 all particletemplate/sphere 15485867 atom_type 1 density constant ${rho} radius constant 0.006
+
+fix		pdd1 all particledistribution/discrete 32452843 1 pts1 1.0
 
 #region and insertion
 group		nve_group region reg
@@ -54,7 +55,7 @@ region		bc cylinder z 0.0 0.0 0.015 0.05 0.12 units box
 
 #particle insertion
 fix			ins nve_group insert/stream seed 67867967 distributiontemplate pdd1 &
-				nparticles 600000 massrate 10 insert_every 1000 overlapcheck yes all_in no vel constant 0.0 -1.0 0.0 &
+				nparticles 10000 massrate 10 insert_every 1000 overlapcheck yes all_in no vel constant 0.0 0.0 -1.0 &
 				insertion_face inface 
 
 fix		integr nve_group nve/sphere
@@ -67,14 +68,22 @@ thermo_modify	lost ignore norm no
 compute_modify	thermo_temp dynamic yes
 
 run		1
-
-
 dump		dmp0 all custom/vtk 10000 post/dump*.vtk id type type x y z radius  #vx vy vz
 
 #insert particles
-run		10000 upto
-unfix		ins
-fix mov_m all move/mesh mesh cad_base viblin axis 0. 1. 0. order 1 amplitude ${Y_0} phase 0 period ${T}
+run		25000 
+unfix	ins
+
+fix		pts2 all particletemplate/sphere 15485867 atom_type 1 density constant ${rho} radius constant 0.006
+fix     pdd2 all particledistribution/discrete 86028157 1 pts2 1.0
+fix			ins2 nve_group insert/stream seed 67867967 distributiontemplate pdd2 &
+				nparticles 10000 massrate 10 insert_every 1000 overlapcheck yes all_in no vel constant 0.0 0.0 -1.0 &
+				insertion_face inface
+run     25000
+unfix	ins2
+
+fix mov_m all move/mesh mesh cad_base viblin axis 0. 0. 1. order 1 amplitude ${Y_0} phase 0 period ${T}
 
 dump_modify dmp0 every 200 #16
 run     150000 upto
+
