@@ -1,0 +1,3 @@
+[submodule "LIGGGHTS-PUBLIC"]
+	path = LIGGGHTS-PUBLIC
+	url = https://github.com/CFDEMproject/LIGGGHTS-PUBLIC.git

@@ -74,9 +74,9 @@ thermo_modify	lost ignore norm no
 compute_modify	thermo_temp dynamic yes
 
 run		1
-#dump		dmp0 all custom/vtk 10000 post/dump*.vtk id type type x y z radius  #vx vy vz
-dump		dmp0 all custom/vtk 10000 post/dump*.superq.vtk type mass x y z id vx vy vz fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
-dump 		dumpstl all mesh/stl 10000 post/dump*.stl
+#dump		dmp0 all custom/vtk 10000 ../post/dump*.vtk id type type x y z radius  #vx vy vz
+dump		dmp0 all custom/vtk 10000 ../post/dump*.superq.vtk type mass x y z id vx vy vz fx fy fz omegax omegay omegaz radius shapex shapey shapez quat1 quat2 quat3 quat4 blockiness1 blockiness2 tqx tqy tqz angmomx angmomy angmomz
+dump 		dumpstl all mesh/stl 10000 ../post/dump*.stl
 
 
 #insert particles
